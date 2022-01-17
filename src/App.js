@@ -1,25 +1,40 @@
-import logo from './logo.svg';
-import './App.css';
+import React from "react";
+// function App() {
+//   window.navigator.geolocation.getCurrentPosition(
+//     (position) => console.log(position),
+//     (err) => console.log(err)
+//   );
+//   return <div className="App">Latitude: </div>;
+// }
 
-function App() {
-  return (
-    <div className="App">
-      <header className="App-header">
-        <img src={logo} className="App-logo" alt="logo" />
-        <p>
-          Edit <code>src/App.js</code> and save to reload.
-        </p>
-        <a
-          className="App-link"
-          href="https://reactjs.org"
-          target="_blank"
-          rel="noopener noreferrer"
-        >
-          Learn React
-        </a>
-      </header>
-    </div>
-  );
+class App extends React.Component {
+  constructor(props) {
+    super(props);
+    // This is the only time when we do direct assignment to this.state
+    this.state = {
+      lat: null,
+      errorMessage: "",
+    };
+    window.navigator.geolocation.getCurrentPosition(
+      (position) => {
+        this.setState({
+          // To update our state object we call setState
+          lat: position.coords.latitude,
+        });
+      },
+      (err) => {
+        this.setState({ errorMessage: err.message });
+      }
+    );
+  }
+  // React says we have to define render()
+  render() {
+    if (this.state.errorMessage && !this.state.lat)
+      return <div>Error: {this.state.errorMessages}</div>;
+    if (!this.state.errorMessage && this.state.lat)
+      return <div>Latitude: {this.state.lat}</div>;
+    return <div>Loading...</div>;
+  }
 }
 
 export default App;
